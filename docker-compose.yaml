@@ -3,7 +3,7 @@ services:
     image: 925047940866.dkr.ecr.us-west-2.amazonaws.com/std19-nginx:latest
     container_name: nginx-container
     ports:
-      - "8080:80"
+      - "80:80"
     # volumes:
     #   - /home/ec2-user/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf:ro
     #   - /home/ec2-user/nginx/html:/usr/share/nginx/html:ro
