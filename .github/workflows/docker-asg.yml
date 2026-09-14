@@ -40,7 +40,7 @@ jobs:
       #   IMAGE_TAG: ${{github.sha}}
       run: |
         docker build --no-cache -t 925047940866.dkr.ecr.us-west-2.amazonaws.com/std19-nginx:1.31.3-ecr ./nginx
-        docker build --no-cache -t $925047940866.dkr.ecr.us-west-2.amazonaws.com/std19-nginx:latest ./nginx
+        docker build --no-cache -t 925047940866.dkr.ecr.us-west-2.amazonaws.com/std19-nginx:latest ./nginx
 
         docker push 925047940866.dkr.ecr.us-west-2.amazonaws.com/std19-nginx:1.31.3-ecr
         docker push 925047940866.dkr.ecr.us-west-2.amazonaws.com/std19-nginx:latest
