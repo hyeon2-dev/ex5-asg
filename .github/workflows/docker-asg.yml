@@ -54,8 +54,8 @@ jobs:
       run: |
         # 소스 데이터 S3 버킷으로 업로드
         aws ssm send-command \
-          --instance-ids "i-07b5248d6b8c9faf1" \
           --document-name "AWS-RunShellScript" \
+          --targets "Key=tag:Cicd,Values=asg" \
           --parameters "commands=[
             \"aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 925047940866.dkr.ecr.us-west-2.amazonaws.com\",
             \"sudo docker stop nginx-container || true\",
