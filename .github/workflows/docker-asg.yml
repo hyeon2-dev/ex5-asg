@@ -61,9 +61,9 @@ jobs:
             \"sudo docker stop nginx-container || true\",
             \"sudo docker rm nginx-container || true\",
             \"sudo aws s3 cp s3://std19-website0914-bucket/docker-compose.yaml ./docker-compose.yaml\",
-            \"docker compose pull\",
-            \"docker compose up -d --remove-orphans\",
-            \"docker image prune -f\"
+            \"sudo docker compose pull\",
+            \"sudo docker compose up -d --remove-orphans\",
+            \"sudo docker image prune -f\"
           ]" \
           --region ${{secrets.AWS_REGION}} \
           --comment "Deploying SSM docker"
