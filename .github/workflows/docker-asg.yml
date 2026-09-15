@@ -38,6 +38,7 @@ jobs:
         # 전체 동기화 / 하나만 동기화하고 싶으면 cp
         aws s3 cp ./docker-compose.yaml s3://std19-website0914-bucket/docker-compose.yaml
         aws s3 sync ./nginx/html/ s3://std19-website0914-bucket/html/ --delete
+        aws s3 sync ./fastapi/app/ s3://std19-website0914-bucket/app/ --delete
         aws s3 cp ./nginx/conf.d/default.conf s3://std19-website0914-bucket/conf.d/default.conf
 
     - name: Build and push Docker image to ECR
@@ -48,10 +49,12 @@ jobs:
       run: |
         docker build --no-cache -t 925047940866.dkr.ecr.us-west-2.amazonaws.com/std19-nginx:1.31.3-ecr ./nginx
         docker build --no-cache -t 925047940866.dkr.ecr.us-west-2.amazonaws.com/std19-nginx:latest ./nginx
+        docker build --no-cache -t 925047940866.dkr.ecr.us-west-2.amazonaws.com/std19-fastapi:v1 ./fastapi
         docker build --no-cache -t 925047940866.dkr.ecr.us-west-2.amazonaws.com/std19-fastapi:latest ./fastapi
 
         docker push 925047940866.dkr.ecr.us-west-2.amazonaws.com/std19-nginx:1.31.3-ecr
         docker push 925047940866.dkr.ecr.us-west-2.amazonaws.com/std19-nginx:latest
+        docker push 925047940866.dkr.ecr.us-west-2.amazonaws.com/std19-fastapi:v1
         docker push 925047940866.dkr.ecr.us-west-2.amazonaws.com/std19-fastapi:latest
       
     - name: 컨테이너 배포 및 S3 파일 싱크
@@ -62,11 +65,14 @@ jobs:
           --targets "Key=tag:Cicd,Values=asg" \
           --parameters "commands=[
             \"sudo aws ecr get-login-password --region us-west-2 | sudo docker login --username AWS --password-stdin 925047940866.dkr.ecr.us-west-2.amazonaws.com\",
-            \"sudo docker stop nginx-container || true\",
-            \"sudo docker rm nginx-container || true\",
+            \"sudo docker stop nginx-container fastapi-container|| true\",
+            \"sudo docker rm nginx-container fastapi-container|| true\",
             \"sudo mkdir -p /home/ec2-user/nginx/\",
-            \"sudo chown -R ec2-user:nginx /home/ec2-user/nginx/\",
+            \"sudo mkdir -p /home/ec2-user/fastapi/app\",
+            \"sudo chown -R ec2-user:ec2-user /home/ec2-user/nginx/\",
+            \"sudo chown -R ec2-user:ec2-user /home/ec2-user/fastapi/\",
             \"sudo aws s3 sync s3://std19-website0914-bucket/html/ /home/ec2-user/nginx/html/\",
+            \"sudo aws s3 sync s3://std19-website0914-bucket/app/ /home/ec2-user/fastapi/app/\",
             \"sudo aws s3 cp s3://std19-website0914-bucket/docker-compose.yaml /home/ec2-user/docker-compose.yaml\",
             \"cd /home/ec2-user\",
             \"sudo docker compose pull\",
