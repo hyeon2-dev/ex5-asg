@@ -37,6 +37,7 @@ jobs:
       run: |
         # 전체 동기화 / 하나만 동기화하고 싶으면 cp
         aws s3 cp ./docker-compose.yaml s3://std19-website0914-bucket/docker-compose.yaml
+        aws s3 sync ./nginx/html/ s3://std19-website0914-bucket/html/ --delete
 
     - name: Build and push Docker image to ECR
       # env:
@@ -57,10 +58,14 @@ jobs:
           --document-name "AWS-RunShellScript" \
           --targets "Key=tag:Cicd,Values=asg" \
           --parameters "commands=[
-            \"aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 925047940866.dkr.ecr.us-west-2.amazonaws.com\",
+            \"sudo aws ecr get-login-password --region us-west-2 | sudo docker login --username AWS --password-stdin 925047940866.dkr.ecr.us-west-2.amazonaws.com\",
             \"sudo docker stop nginx-container || true\",
             \"sudo docker rm nginx-container || true\",
-            \"sudo aws s3 cp s3://std19-website0914-bucket/docker-compose.yaml ./docker-compose.yaml\",
+            \"sudo mkdir -p /home/ec2-user/nginx/\",
+            \"sudo chown -R ec2-user:nginx /home/ec2-user/nginx/\",
+            \"sudo aws sync s3://std19-website0914-bucket/html/ /home/ec2-user/nignx/html/\",
+            \"sudo aws s3 cp s3://std19-website0914-bucket/docker-compose.yaml /home/ec2-user/docker-compose.yaml\",
+            \"cd /home/ec2-user\"
             \"sudo docker compose pull\",
             \"sudo docker compose up -d --remove-orphans\",
             \"sudo docker image prune -f\"
