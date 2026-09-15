@@ -19,8 +19,8 @@ services:
     container_name: fastapi-container
     expose:
       - "8000"
-    volume:
-      - /home/ec2-user/fastapi/
+    volumes:
+      - /home/ec2-user/fastapi/app:/app:ro
     healthcheck:
       test:
         - CMD
