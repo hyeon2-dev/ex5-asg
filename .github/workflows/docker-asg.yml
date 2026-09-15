@@ -63,7 +63,7 @@ jobs:
             \"sudo docker rm nginx-container || true\",
             \"sudo mkdir -p /home/ec2-user/nginx/\",
             \"sudo chown -R ec2-user:nginx /home/ec2-user/nginx/\",
-            \"sudo aws sync s3://std19-website0914-bucket/html/ /home/ec2-user/nignx/html/\",
+            \"sudo aws s3 sync s3://std19-website0914-bucket/html/ /home/ec2-user/nginx/html/\",
             \"sudo aws s3 cp s3://std19-website0914-bucket/docker-compose.yaml /home/ec2-user/docker-compose.yaml\",
             \"cd /home/ec2-user\",
             \"sudo docker compose pull\",
