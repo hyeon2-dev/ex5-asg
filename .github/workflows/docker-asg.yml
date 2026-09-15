@@ -38,6 +38,7 @@ jobs:
         # 전체 동기화 / 하나만 동기화하고 싶으면 cp
         aws s3 cp ./docker-compose.yaml s3://std19-website0914-bucket/docker-compose.yaml
         aws s3 sync ./nginx/html/ s3://std19-website0914-bucket/html/ --delete
+        aws s3 cp ./nginx/conf.d/default.conf s3://std19-website0914-bucket/conf.d/default.conf
 
     - name: Build and push Docker image to ECR
       # env:
@@ -47,9 +48,11 @@ jobs:
       run: |
         docker build --no-cache -t 925047940866.dkr.ecr.us-west-2.amazonaws.com/std19-nginx:1.31.3-ecr ./nginx
         docker build --no-cache -t 925047940866.dkr.ecr.us-west-2.amazonaws.com/std19-nginx:latest ./nginx
+        docker build --no-cache -t 925047940866.dkr.ecr.us-west-2.amazonaws.com/std19-fastapi:latest ./fastapi
 
         docker push 925047940866.dkr.ecr.us-west-2.amazonaws.com/std19-nginx:1.31.3-ecr
         docker push 925047940866.dkr.ecr.us-west-2.amazonaws.com/std19-nginx:latest
+        docker push 925047940866.dkr.ecr.us-west-2.amazonaws.com/std19-fastapi:latest
       
     - name: 컨테이너 배포 및 S3 파일 싱크
       run: |
