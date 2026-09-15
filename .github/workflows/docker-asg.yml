@@ -39,7 +39,6 @@ jobs:
         aws s3 cp ./docker-compose.yaml s3://std19-website0914-bucket/docker-compose.yaml
         aws s3 sync ./nginx/html/ s3://std19-website0914-bucket/html/ --delete
         aws s3 sync ./fastapi/app/ s3://std19-website0914-bucket/app/ --delete
-        aws s3 cp ./nginx/conf.d/default.conf s3://std19-website0914-bucket/conf.d/default.conf
 
     - name: Build and push Docker image to ECR
       # env:
